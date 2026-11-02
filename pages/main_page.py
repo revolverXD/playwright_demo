@@ -1,0 +1,35 @@
+from playwright.sync_api import Page
+class MainPage:
+    def __init__(self, page: Page):
+        self.page = page
+        self.javaScriptDelays = page.get_by_role("link", name="JavaScript Delays")
+        self.formFields = page.get_by_role("link", name="Form Fields")
+        self.popups = page.get_by_role("link", name="Popups")
+        self.sliders = page.get_by_role("link", name="Sliders")
+        self.calendar = page.get_by_role("link", name="Calendars")
+        self.modals = page.get_by_role("link", name="Modals")
+        self.table = page.get_by_role("link", name="Tables")
+        self.windonOperating  = page.get_by_role("link", name="Window Operations")
+        self.hover =  page.get_by_role("link", name="Hover")
+        self.ads =  page.get_by_role("link", name="Ads")
+        self.gestures =  page.get_by_role("link", name="Gestures")
+        self.fileDownload =  page.get_by_role("link", name="File Download")
+        self.clickEvents = page.get_by_role("link", name="Click Events")
+        self.spinners = page.get_by_role("link", name="Spinners")
+        self.fileUpload = page.get_by_role("link", name="File Upload")
+        self.iframes = page.get_by_role("link", name="Iframes")
+        self.brokeImage = page.get_by_role("link", name="Broken Images")
+        self.brokenLink = page.get_by_role("link", name="Broken Links")
+        self.accordions = page.get_by_role("link", name="Accordions")
+        self.blogLing = page.get_by_role("link", name="Blog")
+        self.automateNowLogo = page.get_by_role("img", name="automateNow Logo")
+        self.learnMore = page.get_by_role("link", name="Learn More")
+        self.about = page.get_by_role("link", name="About")
+        self.closeButton = page.get_by_role("button", name="Close")
+        self.name = page.get_by_role("textbox", name="Name")
+        self.email = page.get_by_role("textbox", name="Email")
+        self.message = page.get_by_role("textbox", name="Message")
+        self.submitButton = page.get_by_role("button", name="Submit")
+
+    def open(self, main_url):
+        self.page.goto(main_url)

@@ -1,0 +1,6 @@
+flask>=3.0
+requests>=2.31
+pydantic>=2.5
+pytest>=8.0
+pytest-playwright>=0.5
+pytest-xdist>=3.5
