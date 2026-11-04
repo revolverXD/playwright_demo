@@ -1,6 +1,7 @@
 import os 
 import pytest
 from playwright.sync_api import Page, BrowserContext
+from pages.form_field_page import formField
 
 @pytest.fixture
 def main_url():
@@ -9,10 +10,17 @@ def main_url():
     return url
 
 @pytest.fixture
-def page(browser: BrowserContext) -> Page:
+def page(context: BrowserContext) -> Page:
     """Create a new page for each test."""
-    p = browser.new_page()
+    p = context.new_page()
     p.set_default_timeout(5000)
     yield p
     p.close()
+
+@pytest.fixture
+def form_page(page: Page, main_url: str) -> formField:
+    """Opens the form fields page and returns its page object."""
+    form_fields = formField(page)
+    form_fields.open(main_url)
+    return form_fields
 
