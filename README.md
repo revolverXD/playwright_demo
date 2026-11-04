@@ -1,3 +1,7 @@
+# Intro
+Playwright automation practice repo
+Works with https://practice-automation.com/
+
 # Env creation
 ```bash
 distrobox create --name playwright_test --image ubuntu:24.04
