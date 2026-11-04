@@ -7,4 +7,4 @@ class hoverPage:
         self.hover_heading = page.locator("#mouse_over")
 
     def open(self, main_url):
-        self.page.goto(f"{main_url}/assets/hover_index.html")
+        self.page.goto(f"{main_url}/hover")

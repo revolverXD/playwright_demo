@@ -25,4 +25,4 @@ class formField:
         self.automatNow_image = page.get_by_role("img", name="automateNow Logo")
 
     def open(self, main_url: str) -> None:
-        self.page.goto(f"{main_url}/assets/form-fields_index.html")
+        self.page.goto(f"{main_url}/form-fields")

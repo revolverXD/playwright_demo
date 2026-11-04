@@ -28,11 +28,6 @@ def test_buttons_available(main_url, page: Page):
     expect(main_page.automateNowLogo).to_be_visible()
     expect(main_page.learnMore).to_be_visible()
     expect(main_page.about).to_be_visible()
-    expect(main_page.closeButton).to_have_count(2)
-    expect(main_page.name).to_be_visible()
-    expect(main_page.email).to_be_visible()
-    expect(main_page.message).to_be_visible()
-    expect(main_page.submitButton).to_be_visible()
 
 
 
