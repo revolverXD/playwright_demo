@@ -25,11 +25,6 @@ class MainPage:
         self.automateNowLogo = page.get_by_role("img", name="automateNow Logo")
         self.learnMore = page.get_by_role("link", name="Learn More")
         self.about = page.get_by_role("link", name="About")
-        self.closeButton = page.get_by_role("button", name="Close")
-        self.name = page.get_by_role("textbox", name="Name")
-        self.email = page.get_by_role("textbox", name="Email")
-        self.message = page.get_by_role("textbox", name="Message")
-        self.submitButton = page.get_by_role("button", name="Submit")
 
     def open(self, main_url):
         self.page.goto(main_url)

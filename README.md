@@ -1,7 +1,9 @@
 # Intro
 - Playwright automation practice repo
-- Works with https://practice-automation.com/
-- Set it to the correct url by setting the env variable APP_URL="https://practice-automation.com/"
+- Runs against https://practice-automation.com by default
+- To run against a saved copy of the site instead, set APP_URL to where you serve it, e.g.
+  `APP_URL="http://127.0.0.1:8091"` with `python3 -m http.server 8091 -d <saved site>`.
+  The saved copy needs the original layout (`/assets/form-fields_index.html`), the public site uses `/form-fields`.
 # Env creation
 ```bash
 distrobox create --name playwright_test --image ubuntu:24.04

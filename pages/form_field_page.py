@@ -2,6 +2,9 @@ from playwright.sync_api import Page
 
 
 class formField:
+    # the public site and a saved copy of it serve this page under different paths
+    PATHS = {"online": "/form-fields", "local": "/assets/form-fields_index.html"}
+
     def __init__(self, page: Page):
         self.page = page
         self.name = page.get_by_test_id("name-input")
@@ -24,5 +27,5 @@ class formField:
         self.like_automation_dropdown = page.get_by_test_id("automation")
         self.automatNow_image = page.get_by_role("img", name="automateNow Logo")
 
-    def open(self, main_url: str) -> None:
-        self.page.goto(f"{main_url}/form-fields")
+    def open(self, main_url: str, target: str) -> None:
+        self.page.goto(main_url + self.PATHS[target])
