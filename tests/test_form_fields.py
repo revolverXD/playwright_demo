@@ -31,7 +31,6 @@ def test_drink_selection(main_url, page):
     """
     Checks the ability to check and uncheck favorite drink
     """
-    expect.set_options(timeout=6000)
     form_fields = formField(page)
     form_fields.open(main_url)
     form_fields.favorite_drink_water.check()
