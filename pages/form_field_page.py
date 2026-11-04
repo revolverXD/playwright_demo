@@ -22,6 +22,7 @@ class formField:
         self.favorite_color_green = page.get_by_test_id("color4")
         self.favorite_color_pinkish = page.get_by_test_id("color5")
         self.like_automation_dropdown = page.get_by_test_id("automation")
+        self.automatNow_image = page.get_by_role("img", name="automateNow Logo")
 
     def open(self, main_url: str) -> None:
         self.page.goto(f"{main_url}/assets/form-fields_index.html")
