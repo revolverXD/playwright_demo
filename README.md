@@ -1,8 +1,7 @@
 # Intro
-- Playwright automation practice repo\
+- Playwright automation practice repo
 - Works with https://practice-automation.com/
-- Points by default to http://127.0.0.1:8091 
-- Set it to the correct url by setting the env variable APP_URL 
+- Set it to the correct url by setting the env variable APP_URL="https://practice-automation.com/"
 # Env creation
 ```bash
 distrobox create --name playwright_test --image ubuntu:24.04
