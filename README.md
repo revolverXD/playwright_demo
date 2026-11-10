@@ -18,7 +18,7 @@ playwright install --with-deps chromium
 # Jenkins
 - Build the docker image
 ```
-sudo docker build -t jenkins-docker .
+sudo docker build -t local-jenkins .
 ```
 - Bring up the jenkins appliance
 ```
