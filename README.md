@@ -14,3 +14,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 playwright install --with-deps chromium
 ```
+
+# Jenkins
+- Build the docker image
+```
+sudo docker build -t jenkins-docker .
+```
+- Bring up the jenkins appliance
+```
+docker compose up -d
+```
