@@ -184,9 +184,13 @@ def db_path() -> str:
 
 
 def connect() -> sqlite3.Connection:
-    conn = sqlite3.connect(db_path())
+    # FastAPI runs a request's steps on different worker threads, and concurrent requests hold
+    # different connections: do not pin this one to a thread, and wait instead of failing on a write
+    # lock. Each request still gets its own connection (see get_db).
+    conn = sqlite3.connect(db_path(), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA busy_timeout = 5000")
     return conn
 
 

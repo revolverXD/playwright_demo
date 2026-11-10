@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Asteroid Mining Fleet - 3D</title>
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#05070c; --panel:#0b1220ee; --ink:#cfe0f5; --dim:#7f93ad; --line:#1d2b40; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+               font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  #scene { position:fixed; inset:0; }
+  canvas { display:block; }
+  .panel { position:fixed; background:var(--panel); border:1px solid var(--line); border-radius:10px;
+           padding:12px 14px; backdrop-filter:blur(6px); }
+  #side { left:14px; top:14px; width:330px; max-height:calc(100vh - 28px); overflow:auto; }
+  #side h1 { font-size:14px; margin:0 0 2px; letter-spacing:.04em; }
+  #side h2 { font-size:11px; margin:14px 0 4px; color:var(--dim); text-transform:uppercase; letter-spacing:.1em; }
+  #side p { margin:0 0 8px; color:var(--dim); }
+  label { display:block; margin:6px 0 0; color:var(--dim); }
+  input, button { font:inherit; color:var(--ink); background:#101a2b; border:1px solid var(--line);
+                  border-radius:6px; padding:6px 8px; width:100%; }
+  button { cursor:pointer; background:#16263d; }
+  button:hover { background:#1d3050; }
+  #login { display:flex; flex-direction:column; gap:2px; }
+  #who { margin-top:8px; color:var(--dim); }
+  table { width:100%; border-collapse:collapse; margin-top:2px; }
+  th, td { text-align:left; padding:2px 4px; border-bottom:1px solid var(--line); font-weight:400; }
+  th { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+  td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .k { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+  #tip { position:fixed; pointer-events:none; display:none; max-width:340px; z-index:5; }
+  #tip b { color:#fff; }
+  #tip .kv { color:var(--dim); }
+  #err { color:#ff8f9c; white-space:pre-wrap; }
+  .bad { color:#ff8f9c; } .good { color:#7ee787; } .warn { color:#ffd166; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "/viz/three.module.min.js", "three/addons/controls/OrbitControls.js": "/viz/OrbitControls.js" } }
+</script>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="side" class="panel">
+  <h1>ASTROID MINING CONTROL</h1>
+  <p>3D view of the live fleet API. Schematic layout: rings are orbit bands, sizes and colours are real data.</p>
+  <div id="login">
+    <label>username <input id="user" value="fleet-admin"></label>
+    <label>password <input id="pass" type="password" value="regolith-7"></label>
+    <button id="go" style="margin-top:8px">sign in and watch</button>
+    <div id="err"></div>
+  </div>
+  <div id="who"></div>
+  <div id="hud"></div>
+</div>
+
+<div id="tip" class="panel"></div>
+<script type="module" src="/viz/app.js"></script>
+</body>
+</html>

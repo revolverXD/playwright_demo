@@ -6,11 +6,13 @@ Run:  uvicorn app.main:app --reload
 import json
 import sqlite3
 import uuid
+from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
 from . import auth
@@ -19,6 +21,7 @@ from . import db as dbmod
 from . import ospf
 
 SCHEMA_VERSION = "1.5.0"
+WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 LinkRole = Literal["PRIMARY", "SECONDARY", "COLD_STANDBY", "SURVEY"]
 EntityStatus = Literal["PLANNED", "INTEGRATING", "STANDBY", "OPERATIONAL", "DEGRADED", "OFFLINE", "DECOMMISSIONED"]
 RobotState = Literal["IDLE", "ACTIVE", "PAUSED", "STOPPED", "CHARGING", "RETURNING", "MAINTENANCE", "FAULT", "LOST"]
@@ -148,6 +151,12 @@ Everything the fleet knows about itself, over HTTP: comms relays, mining sites w
 base station, the robot fleet, and the OSPF-style adjacency mesh the relays run between themselves.
 State lives in SQLite; a cold start seeds a fleet in a known-good state.
 
+**A 3D view of the whole fleet is served at `/viz`** (static page, three.js): it signs in through
+`POST /api/v1/auth/login`, then draws sites, relays, uplinks, adjacencies and robots from these
+endpoints and refreshes every 5 s. Asteroid size is production rate, colours are live status, gold
+and silver rings mark the current DS and BDS, and a relay that stops holding the adjacency goes dark
+when its dead timer runs out.
+
 **Rules the service enforces**
 
 * one `PRIMARY` relay per site; a second one is refused, `failover` promotes the next usable backup.
@@ -218,6 +227,8 @@ app = FastAPI(
     openapi_tags=TAGS,
     dependencies=[Depends(require_access)],
 )
+# the three.js view is a static page: it has no data of its own, it signs in through the API below.
+app.mount("/viz", StaticFiles(directory=WEB_DIR, html=True), name="viz")
 
 
 def openapi_with_bearer() -> dict:

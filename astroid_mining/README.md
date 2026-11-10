@@ -15,6 +15,7 @@ app/clock.py   the one clock: host system time, UTC, and the OSPF hold-time math
 app/seed.py    the fleet in its known-good state (the sample documents from the spec, incl. users)
 app/ospf.py    relay-net adjacencies and the DS/BDS election
 app/main.py    FastAPI routes
+web/           three.js 3D view of the live API, served at /viz (no build step)
 tests/         pytest suite, live uvicorn server, requests client
 ```
 
@@ -27,14 +28,15 @@ python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
 ## Run
 
 ```bash
-.venv/bin/python -m uvicorn app.main:app --reload      # Swagger UI at /docs, Redoc at /redoc
+.venv/bin/python -m uvicorn app.main:app --reload      # Swagger UI at /docs, Redoc at /redoc, 3D view at /viz
 ```
 
 State lives in `astroid_mining.db` (override with `ASTROID_DB_PATH=/path/to.db`). The schema is
-created and the fleet seeded on first start; delete the file for a clean fleet (an old database gets
-the new tables but not the seeded relay nets or users). On boot each relay net runs its first DS/BDS
-election, and every state change is written as a text log line — to the server console and to the
-queryable `logs` table.
+created and the fleet seeded on first start. On start an older database gets the new tables, the two
+accounts, and its OSPF timers moved onto the real clock; a database that predates relay nets does not
+get the nets themselves — delete the file for a clean fleet. On boot each relay net runs its first
+DS/BDS election, and every state change is written as a text log line — to the server console and to
+the queryable `logs` table.
 
 ## Sign in
 
@@ -59,6 +61,32 @@ Passwords are stored as PBKDF2-SHA256 (stdlib, 200k iterations); tokens are rand
 `expires_at` in SQLite, and expired rows are swept on each login. In Swagger UI use **Authorize** and
 paste the token — the schema declares it as a bearer security scheme, and `/health` and the login are
 the two endpoints that stay public (as does `/docs` itself).
+
+## 3D view
+
+`http://localhost:8000/viz/` — one page (`web/index.html` + `web/app.js`) with three.js r170 vendored
+beside it, so there is no build step, no npm and nothing fetched from a CDN while you look at it. The
+page holds no fleet data: the form signs in through `POST /api/v1/auth/login`, then it GETs
+`/fleet/summary`, `/clock`, `/sites`, `/sites/{id}`, `/satellites` and `/relay-nets` every 5 s and
+draws what it gets. Register a site and an asteroid appears; run an election and the gold ring moves.
+
+| what is drawn | which field it comes from |
+|---|---|
+| asteroid size | `summary.productionRateTph` |
+| asteroid colour | `healthScore` green → red; grey when the site is not `OPERATIONAL` |
+| cubes circling an asteroid | `baseStation.fleet.roster[]`, coloured by robot `state` (legend in the panel) |
+| octahedra on the inner ring | `/api/v1/satellites`, coloured by `status` |
+| gold / silver ring around a relay | the current DS / BDS of that relay net |
+| lines asteroid → relay | `satelliteLinks.links[]`: opacity by role (PRIMARY bold → COLD_STANDBY faint), colour by `status` (`DEGRADED` red) |
+| relay ↔ relay mesh | one line per pair of peers on a net; any pair not `FULL` goes dark red |
+| panel tables | DS/BDS per net, adjacency state and remaining `holdTimeS`, fleet counts, the server clock and token countdown |
+
+Drag to orbit, wheel to zoom, hover any body or line for its live fields. Nothing is animated from
+invented numbers — the rings turn at the `SPIN` rate and their bodies sit at the `*_RING` radius, both
+constants at the top of `web/app.js`, and position is a pure function of the page clock, so a 5 s poll
+never snaps anything back to its start angle. The layout is schematic: orbit bands and sizes are not to
+scale, since the real positions are in units of 10⁸ km. A browser without WebGL says so and still fills
+in the panel.
 
 ## What the API does
 
@@ -139,7 +167,7 @@ brings a dead one back up through `INIT → 2_WAY → FULL`; the neighbor table 
 ## Test
 
 ```bash
-.venv/bin/python -m pytest                # 82 tests
+.venv/bin/python -m pytest                # 87 tests
 .venv/bin/python -m pytest -k failover -x  # one behaviour
 ```
 
@@ -154,6 +182,7 @@ brings a dead one back up through `INIT → 2_WAY → FULL`; the neighbor table 
 | `test_sites.py` | uplinks, PRIMARY conflict, failover order, production/stock metrics, bulk robot commands |
 | `test_robots.py` | the `START/PAUSE/RESUME/STOP` state machine, telemetry, audit trail |
 | `test_reports.py` | reports need an uplink, `senderId` must be the base, duplicates refused |
+| `test_viz.py` | `/viz` and its vendored three.js are served without a token; every field and id the 3D view reads is present in the API (its exact fetch sequence); the five endpoints it calls at once all answer 200 |
 
 `tests/conftest.py` starts uvicorn on a free port against a throwaway SQLite file, waits for
 `/health`, signs in as the seeded admin and hands the tests an `api` fixture that is a thin
@@ -218,6 +247,8 @@ stay readable without a token.
 
 Deliberately left out, so the demo stays a test target rather than a product:
 
+- the 3D view is a read-only demo client: it polls every 5 s, draws no metrics graphs and no log, and
+  has no camera presets or history scrub
 - no automatic failure simulator (relays go offline only when told to), and nothing sends hellos for
   you: leave a demo running for `deadIntervalS` (40 s on the seeded nets) and its relays go DOWN
   until a `hello` arrives
