@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
+import pytest
 
+@pytest.mark.api
 def test_health(api_url, ast_admin_session):
     """Checks the response from the /health endpoint"""
     health_json = ast_admin_session.get(f"{api_url}/health").json()
