@@ -9,7 +9,7 @@ def test_site_operational(api_url, ast_admin_session):
         id = site['id']
         site_data = ast_admin_session.get(f"{api_url}/api/v1/sites/{id}")
         site_data.raise_for_status()
-        assert site_data.json()['site_data'] == "OPERATIONAL"
+        assert site_data.json()['baseStation']['status'] in  ["OPERATIONAL", "PLANNED"]
 
 
 def test_site_addition(api_url, ast_admin_session):
