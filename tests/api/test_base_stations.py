@@ -2,9 +2,10 @@ import pytest
 
 @pytest.mark.api
 def test_site_operational(api_url, ast_admin_session):
-    sites = ast_admin_session.get(f"{api_url}/api/v1/sites").json()['sites']
+    sites = ast_admin_session.get(f"{api_url}/api/v1/sites")
     sites.raise_for_status()
-    for site in sites:
+    sites_data = sites.json()['sites']
+    for site in sites_data:
         id = site['id']
         site_data = ast_admin_session.get(f"{api_url}/api/v1/sites/{id}")
         site_data.raise_for_status()
