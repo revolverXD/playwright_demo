@@ -12,6 +12,7 @@ def test_site_operational(api_url, ast_admin_session):
 
 
 def test_site_addition(api_url, ast_admin_session):
+    # Trigger build
     data = {
         "name": "PsychoLink1",
         "designation": "Test-Station",
