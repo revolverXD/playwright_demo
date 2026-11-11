@@ -21,7 +21,7 @@ def api_url():
 
 @pytest.fixture
 def ast_admin_token(api_url):
-    token = requests.post(f"{api_url}/api/v1/auth/login", json={"username": "fleet-admin", "password": "regolith-7"})
+    token = requests.post(f"{api_url}/api/v1/auth/login", json={"username": "fleet-admin", "password": "regolith-7"}).json()['token']
     return token
 
 @pytest.fixture
