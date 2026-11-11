@@ -29,6 +29,6 @@ def test_site_addition(api_url, ast_admin_session):
     site = ast_admin_session.get(f"{api_url}/api/v1/sites/1")
     site.raise_for_status()
     site_json = site.json()
-    assert site_json["baseStationId"] == 'e70b39a5-2c48-4d1f-9b6a-84fc0e2d7b13'
-    assert site_json["status"] == 'PLANNED'
-    assert site_json['id'] == "1"
+    assert site_json['baseStation']["status"] == 'PLANNED'
+    assert site_json['baseStation']['id'] == 'e70b39a5-2c48-4d1f-9b6a-84fc0e2d7b13'
+    assert site_json['baseStation']['name'] == "PsychoLink1"
